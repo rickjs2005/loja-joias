@@ -1,0 +1,277 @@
+@import "tailwindcss";
+
+/*
+  Tema editorial claro — Tailwind v4 (CSS-first, sem tailwind.config).
+  As cores são espelho de src/config/theme.config.ts. Para trocar a paleta,
+  altere aqui em :root e lá no theme.config (mantidos em sincronia manual).
+*/
+
+:root {
+  --store-bg: #faf8f6;
+  --store-surface: #ffffff;
+  --store-ink: #1b1b1b;
+  --store-muted: #6e6a63;
+  --store-soft: #8b8b8b;
+  --store-line: #e7e0d6;
+  --store-accent: #9c7b45;
+  --store-accent-soft: #c7ae83;
+  /* Tokens que NÃO invertem — para as seções escuras de destaque. */
+  --store-onyx: #1b1b1b;
+  --store-cream: #faf8f6;
+  color-scheme: light;
+}
+
+/* Modo escuro: inverte os tokens semânticos (classe .dark no <html>). */
+.dark {
+  --store-bg: #141210;
+  --store-surface: #1e1b17;
+  --store-ink: #f3efe8;
+  --store-muted: #a89f91;
+  --store-soft: #8f897e;
+  --store-line: #312c25;
+  --store-accent: #cba56c;
+  --store-accent-soft: #ddc89f;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-bg: var(--store-bg);
+  --color-surface: var(--store-surface);
+  --color-ink: var(--store-ink);
+  --color-muted: var(--store-muted);
+  --color-soft: var(--store-soft);
+  --color-line: var(--store-line);
+  --color-accent: var(--store-accent);
+  --color-accent-soft: var(--store-accent-soft);
+  --color-onyx: var(--store-onyx);
+  --color-cream: var(--store-cream);
+
+  --font-display: var(--font-fraunces);
+  --font-sans: var(--font-inter);
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-bg);
+    color: var(--color-ink);
+    font-family: var(--font-sans), system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    transition: background-color 0.4s ease, color 0.4s ease;
+  }
+
+  ::selection {
+    background-color: var(--color-accent);
+    color: #fff;
+  }
+
+  /* Respeita usuários que pedem menos movimento. */
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: var(--font-display), Georgia, serif;
+  }
+
+  /* Faixa rolante (marquee) do hero. */
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+  .animate-marquee {
+    animation: marquee 28s linear infinite;
+  }
+
+  /* Brilho sutil que cruza o marcador de imagem. */
+  @keyframes shimmer {
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
+  /* Onda (ripple) ao clicar em botões. */
+  @keyframes ripple {
+    from {
+      transform: scale(0);
+      opacity: 0.5;
+    }
+    to {
+      transform: scale(2.4);
+      opacity: 0;
+    }
+  }
+
+  /* Accordion (Radix) — usa a variável de altura do conteúdo. */
+  @keyframes acc-down {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--radix-accordion-content-height);
+    }
+  }
+  @keyframes acc-up {
+    from {
+      height: var(--radix-accordion-content-height);
+    }
+    to {
+      height: 0;
+    }
+  }
+
+  /* Glow dourado discreto (cards/hover). */
+  .glow-gold {
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-accent) 22%, transparent),
+      0 18px 50px -20px color-mix(in srgb, var(--color-accent) 45%, transparent);
+  }
+
+  /* Cintilância (sparkle) sobre as joias. */
+  @keyframes twinkle {
+    0%,
+    100% {
+      transform: scale(0) rotate(0deg);
+      opacity: 0;
+    }
+    45% {
+      opacity: 1;
+    }
+    50% {
+      transform: scale(1) rotate(80deg);
+      opacity: 1;
+    }
+  }
+  .animate-twinkle {
+    animation-name: twinkle;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+  }
+
+  /* Brilho dourado varrendo um texto (gleam) — recortado no texto. */
+  @keyframes gleam {
+    0% {
+      background-position: 200% 0;
+    }
+    60%,
+    100% {
+      background-position: -200% 0;
+    }
+  }
+  .gold-gleam {
+    background-image: linear-gradient(
+      100deg,
+      var(--color-accent) 35%,
+      #f4e6c2 50%,
+      var(--color-accent) 65%
+    );
+    background-size: 220% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: gleam 4.5s ease-in-out infinite;
+  }
+
+  /* Vitrine: faixa de luz diagonal que varre o "vidro" no hover. */
+  @keyframes vitrine-sweep {
+    0% {
+      transform: translateX(-120%) skewX(-18deg);
+    }
+    100% {
+      transform: translateX(220%) skewX(-18deg);
+    }
+  }
+  .vitrine-sheen {
+    overflow: hidden;
+    transition: opacity 0.4s ease;
+  }
+  .vitrine-sheen::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    width: 38%;
+    background: linear-gradient(
+      100deg,
+      transparent,
+      rgba(255, 255, 255, 0.55),
+      transparent
+    );
+    transform: translateX(-120%) skewX(-18deg);
+    mix-blend-mode: screen;
+  }
+  .group\/showcase:hover .vitrine-sheen::before {
+    animation: vitrine-sweep 1.1s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* Partículas douradas flutuantes do hero. */
+  @keyframes float-up {
+    0% {
+      transform: translateY(0) scale(1);
+      opacity: 0;
+    }
+    10% {
+      opacity: var(--p-opacity, 0.5);
+    }
+    90% {
+      opacity: var(--p-opacity, 0.5);
+    }
+    100% {
+      transform: translateY(-120px) scale(1.3);
+      opacity: 0;
+    }
+  }
+}
+
+/* ---- Lenis smooth scroll (recomendado pela lib) ---- */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+/* Cursor customizado: esconde o nativo só em telas com ponteiro fino (desktop). */
+@media (pointer: fine) {
+  body.has-custom-cursor,
+  body.has-custom-cursor a,
+  body.has-custom-cursor button {
+    cursor: none;
+  }
+  /* Mantém o cursor de texto/seleção onde ele importa. */
+  body.has-custom-cursor input,
+  body.has-custom-cursor textarea,
+  body.has-custom-cursor select,
+  body.has-custom-cursor [contenteditable="true"] {
+    cursor: auto;
+  }
+}
