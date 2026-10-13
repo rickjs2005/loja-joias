@@ -37,7 +37,7 @@ export function Footer() {
             <ul className="mt-4 space-y-2.5 text-sm text-muted">
               <li>
                 <a
-                  href={`https://instagram.com/${theme.contact.instagram}`}
+                  href={theme.contact.instagramUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="transition-colors hover:text-ink"

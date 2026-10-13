@@ -16,7 +16,7 @@ const TILES = [
 
 export function InstagramGrid() {
   const { eyebrow, title, subtitle, cta } = copy.instagram;
-  const href = `https://instagram.com/${theme.contact.instagram}`;
+  const href = theme.contact.instagramUrl;
 
   return (
     <section className="py-20 md:py-28">

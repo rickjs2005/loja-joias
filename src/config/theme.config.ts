@@ -14,13 +14,20 @@ export const theme = {
   /** Assinatura curta sob o logo / no <title>. */
   tagline: "Joias e Semijoias de Alto Padrão",
   /** Domínio canônico (para SEO/OG). Ajuste no deploy. */
-  siteUrl: "https://aurea.com.br",
+  siteUrl: "https://loja-joias-two.vercel.app",
 
   contact: {
     /** Número cru — será normalizado por src/lib/phone.ts. */
     whatsapp: "33998779375",
+    /** @ exibido no site (marca fictícia nesta demo). */
     instagram: "aurea.joias",
-    email: "contato@aurea.com.br",
+    /**
+     * Link dos botões de Instagram. Na demo aponta para a página inicial do
+     * Instagram (o @ acima é fictício e não deve levar ao perfil de terceiros).
+     * Ao personalizar, troque pela URL real do perfil da loja.
+     */
+    instagramUrl: "https://www.instagram.com/",
+    email: "contato@aurea.example",
     city: "Manhuaçu — MG",
   },
 
