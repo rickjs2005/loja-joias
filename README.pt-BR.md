@@ -1,88 +1,119 @@
-# AURÉA — Vitrine de Joalheria (funil para WhatsApp)
+[English](README.md) | **Português**
 
-Vitrine premium (estética editorial clara) para joalheria autoral. **Não é
-e-commerce**: não há carrinho, checkout nem pagamento. Todo CTA abre o WhatsApp
-com uma mensagem pronta contendo **Nome · Referência · Preço** da peça.
+# ÁUREA — Vitrine de Joalheria (funil para WhatsApp)
+
+Vitrine premium (estética editorial clara) para uma joalheria autoral **fictícia**
+("ÁUREA"). **Não é e-commerce**: não há carrinho, checkout nem pagamento. Todo
+CTA abre o WhatsApp com uma mensagem pronta contendo **Nome · Referência · Preço**
+da peça.
+
+> **Tipo:** demo comercial (marca fictícia; peças, preços e depoimentos são ilustrativos) · **Demo:** https://loja-joias-two.vercel.app
+
+![Página inicial da vitrine ÁUREA](docs/screenshots/home.webp)
+
+## Funcionalidades
+
+- **`/`** — home: hero com parallax/partículas, coleções por categoria, destaques,
+  marca/atelier, diferenciais, depoimentos, grade de Instagram, FAQ e visita à loja.
+- **`/pecas/[reference]`** — página da peça (11 peças, geradas estaticamente):
+  galeria com zoom, materiais, garantia, cuidados, relacionadas e JSON-LD de produto.
+- **`/experimentar`** — **Espelho Virtual**: prova brincos e colares pela câmera em
+  tempo real (MediaPipe FaceLandmarker), captura foto, compartilha e leva ao
+  WhatsApp. O processamento acontece no navegador; o runtime WASM e o modelo são
+  baixados sob demanda de CDNs públicas (jsDelivr e Google Storage).
+- Alternância de tema claro/escuro, `sitemap.xml`, `robots.txt` e página 404.
+- Microinterações reutilizáveis: `Button` (ripple + magnético), `CustomCursor`,
+  `LuxuryReflection`, `TextReveal`, `ScrollProgress`, `Reveal` e `Showcase`
+  (vitrine 3D nos cards — ver [docs/vitrine-3d.md](docs/vitrine-3d.md)).
+
+![Espelho Virtual](docs/screenshots/experimentar.webp)
 
 ## Stack
 
 - **Next.js 15** (App Router) + React 19 + TypeScript
 - **Tailwind CSS v4** (tema CSS-first, sem `tailwind.config`)
 - **Framer Motion** + **GSAP** (animações; respeitam `prefers-reduced-motion`)
-- **Lenis** (smooth scroll), **shadcn/ui** (Radix Accordion), **lucide-react**
-- **@mediapipe/tasks-vision** (Espelho Virtual / try-on)
-- Catálogo em arquivo (sem banco de dados)
+- **Lenis** (smooth scroll), Radix Accordion, **lucide-react**
+- **@mediapipe/tasks-vision** (Espelho Virtual)
+- Catálogo em arquivo (`src/lib/data/catalog.ts`), sem banco de dados
 
-## Páginas
+## Pré-requisitos e execução
 
-- `/` — home premium: hero com parallax/partículas, coleções, destaques,
-  marca, diferenciais, depoimentos, Instagram, FAQ.
-- `/pecas/[ref]` — página da peça: galeria com zoom, materiais, garantia,
-  cuidados, relacionados, JSON-LD.
-- `/experimentar` — **Espelho Virtual**: prova brincos e colares pela câmera em
-  tempo real (MediaPipe FaceLandmarker), captura foto, compartilha e leva ao
-  WhatsApp. Processamento 100% no navegador; o modelo carrega de CDN sob demanda.
-
-### Microinterações / efeitos reutilizáveis
-
-`Button` (ripple + magnético), `CustomCursor`, `LuxuryReflection` (mirror via
-`-webkit-box-reflect`), `TextReveal`, `ScrollProgress`, `Reveal` (blur/fade),
-`Showcase` (vitrine 3D nos cards — ver [docs/vitrine-3d.md](docs/vitrine-3d.md)).
-
-## Rodar
+Node.js 20 ou superior (testado com Node 22) e npm.
 
 ```bash
-npm install
+npm ci
 npm run dev      # http://localhost:3000
-npm run build    # build de produção (valida tipos + lint)
-npm run start    # serve o build
 ```
+
+Não há variáveis de ambiente.
+
+### Scripts
+
+| Comando | O que faz |
+|---|---|
+| `npm run dev` | servidor de desenvolvimento |
+| `npm run build` | build de produção |
+| `npm run start` | serve o build |
+| `npm run lint` | ESLint |
+| `npx tsc --noEmit` | checagem de tipos |
 
 ## Personalização (white-label)
 
-Tudo que muda de loja para loja está em dois arquivos — nenhum componente
-precisa ser editado:
-
 | O quê | Onde |
 |---|---|
-| Nome da marca, WhatsApp, Instagram, e-mail, cidade, **cores** | `src/config/theme.config.ts` |
-| Textos de marketing (hero, seções, CTAs) | `src/config/copy.ts` |
+| Marca, WhatsApp, Instagram (@ e URL), e-mail, cidade, URL do site, **cores** | `src/config/theme.config.ts` |
+| Textos de marketing (hero, seções, CTAs, depoimentos) | `src/config/copy.ts` |
 | Catálogo de peças | `src/lib/data/catalog.ts` |
 
-> As cores ficam espelhadas em `src/app/globals.css` (`:root`) e no
-> `theme.config.ts`. Ao trocar a paleta, ajuste os dois (mantidos em sincronia
-> manual, sem build step).
+As cores ficam espelhadas em `src/app/globals.css` (`:root`) e no
+`theme.config.ts`; ao trocar a paleta, ajuste os dois.
 
-### WhatsApp
+**WhatsApp:** o número fica só em `theme.config.ts` e é normalizado por
+`src/lib/phone.ts`. Links sempre via `waUrl()` / `productWaUrl()` /
+`<WhatsappCta>` (`src/lib/whatsapp.ts`). Na demo, o número configurado é o
+contato comercial da MilWeb, autora do projeto.
 
-O número fica só em `theme.config.ts` e é normalizado por `src/lib/phone.ts`.
-Links **sempre** via `waUrl()` / `productWaUrl()` / `<WhatsappCta>`
-(`src/lib/whatsapp.ts`) — nunca monte `wa.me` à mão.
+**Contatos fictícios:** o e-mail usa o domínio reservado `aurea.example` e os
+botões de Instagram apontam para a página inicial do Instagram — o @ exibido é
+fictício. Troque `instagramUrl` pela URL real ao personalizar.
 
-### Fotos das peças
-
-O projeto **já vem com fotos reais** de joias em `public/pecas/` (uma por peça,
-nomeadas pelo código: `aur-a01.jpg`, `aur-c03.jpg`...). Para trocar pelas suas:
-
-1. Substitua o arquivo em `public/pecas/` (mantendo o nome) **ou** adicione um
-   novo arquivo lá.
-2. Ajuste o array `images` da peça em `src/lib/data/catalog.ts` (a primeira é a
-   capa; liste várias para a galeria):
-   ```ts
-   images: ["/pecas/aur-a01.jpg", "/pecas/aur-a01-2.jpg"],
-   ```
-
-Se uma peça ficar **sem** `images`, o site mostra automaticamente um marcador
-editorial (gradiente creme→dourado com ícone da categoria).
+**Fotos das peças:** ficam em `public/pecas/` (uma por peça, nomeadas pelo
+código, ex.: `aur-a01.jpg`) e são listadas no array `images` de cada peça em
+`catalog.ts`. Sem `images`, o site mostra um marcador editorial (gradiente com
+ícone da categoria).
 
 ## Estrutura
 
 ```
 src/
-  app/                 layout, home, /pecas/[reference], sitemap, robots, 404
-  components/          seções da página (Hero, Collection, Atelier, ...)
-    ui/                primitivas reutilizáveis (Container, Reveal, WhatsappCta, ...)
-  config/              theme.config.ts (marca/cores) + copy.ts (textos)
-  hooks/               useScrolled
-  lib/                 phone, format, whatsapp, motion, cn, data/ (catálogo + tipos)
+  app/          layout, home, /pecas/[reference], /experimentar, sitemap, robots, 404
+  components/   seções da página (Hero, Collection, Atelier, ...)
+    ui/         primitivas reutilizáveis (Container, Reveal, WhatsappCta, Showcase, ...)
+    mirror/     Espelho Virtual
+  config/       theme.config.ts (marca/cores/contatos) + copy.ts (textos)
+  hooks/        useScrolled
+  lib/          phone, format, whatsapp, motion, cn, mirror/, data/ (catálogo + tipos)
+docs/           documentação do efeito vitrine 3D e capturas de tela
 ```
+
+## Limitações
+
+- Sem carrinho, checkout, pagamento, estoque ou painel administrativo (decisão de produto).
+- Catálogo, preços, depoimentos e dados da loja são fictícios e ficam no código.
+- O Espelho Virtual depende de câmera, de um navegador com WebAssembly e do download do modelo a partir de CDNs externas.
+
+## Créditos
+
+As fotos de `public/pecas/` parecem ser fotografias de banco de imagens; a origem
+e a licença não estão documentadas no repositório (uma delas traz nos metadados
+EXIF o crédito do fotógrafo Atul Mohan). O logotipo em `public/` também não tem
+origem documentada.
+
+## Segurança
+
+Veja [SECURITY.md](SECURITY.md).
+
+## Licença
+
+Ainda não há licença definida; todos os direitos reservados ao autor.
